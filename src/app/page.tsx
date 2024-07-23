@@ -1,6 +1,7 @@
 "use client";
 
 import HeaderComponent from "@/components/HeaderComponent";
+import MainHomeSection from "@/components/MainHomeSection";
 import useAuth from "@/libs/hook/authUser";
 import Image from "next/image";
 
@@ -14,6 +15,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col w-full ">
       <HeaderComponent />
+      <MainHomeSection />
 
     </main>
   );

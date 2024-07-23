@@ -2,7 +2,7 @@
 
 import Button from "@/components/ButtonComponent";
 import Input from "@/components/FormInput";
-import LogoImgfrom from "@/images/Group 252.png";
+import LogoImgfrom from "@/images/devlinkLogo.png";
 import { AiFillMail } from "react-icons/ai";
 import { RiLock2Fill } from "react-icons/ri";
 import Image from "next/image";
