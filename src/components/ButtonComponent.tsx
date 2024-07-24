@@ -8,6 +8,7 @@ interface ButtonProps {
     outline?: boolean;
     initialVariant?: ButtonVariant;
     onClick?: () => void;
+    type?: "submit" | "reset" | "button"
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -16,6 +17,7 @@ const Button: React.FC<ButtonProps> = ({
     outline = false,
     initialVariant = 'default',
     onClick,
+    type
 }) => {
     const [variant, setVariant] = useState<ButtonVariant>(initialVariant);
 
@@ -47,6 +49,7 @@ const Button: React.FC<ButtonProps> = ({
             className={classes}
             onClick={handleClick}
             disabled={variant === 'disabled'}
+            type={type}
         >
             {children}
         </button>

@@ -24,7 +24,7 @@ const Input: React.FC<InputProps> = ({ label, errorMessage, placeholder, showErr
     flex items-center border rounded-md px-3 py-2 transition-colors font-instrumentSans
     ${isFocused ? 'border-primaryClr-300 shadow-custom' : 'border-gray-300'}
     ${showError && errorMessage ? 'border-red-500' : ''}
-    ${isFilled && !isFocused && !showError ? 'border-secondaryClr-100' : ''}
+    ${isFilled && !isFocused && !showError ? 'border-[#D9D9D9]' : ''}
   `;
 
     const iconClass = `
@@ -38,7 +38,7 @@ const Input: React.FC<InputProps> = ({ label, errorMessage, placeholder, showErr
             <label className={inputClass}>
                 {Icon && <Icon className={iconClass} size={15} />}
                 <input
-                    className="outline-none flex-1"
+                    className={`outline-none flex-1 bg-inherit ${showError && errorMessage ? "text-accent-default" : ""}`}
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                     placeholder={placeholder}

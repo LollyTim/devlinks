@@ -1,14 +1,33 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaLink, FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaYoutube, FaTwitter, FaFacebook, FaTwitch, FaDev, FaCodepen, FaStackOverflow } from 'react-icons/fa6';
+import { SiFrontendmentor, SiCodewars, SiFreecodecamp, SiGitlab, SiHashnode } from 'react-icons/si';
 
 interface DropdownProps {
     label: string;
+    placeholder?: string;
     items: { icon: JSX.Element; label: string }[];
     selectedItem?: string;
-    onSelect: (item: string) => void;
+    onSelect: (item: Platform) => void;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ label, items, selectedItem, onSelect }) => {
+type Platform =
+    | 'Github'
+    | 'FrontendMentor'
+    | 'Twitter'
+    | 'LinkedIn'
+    | 'YouTube'
+    | 'Facebook'
+    | 'Twitch'
+    | 'Devto'
+    | 'Codewars'
+    | 'Codepen'
+    | 'freeCodeCamp'
+    | 'GitLab'
+    | 'Hashnode'
+    | 'StackOverflow';
+
+const Dropdown: React.FC<DropdownProps> = ({ label, items, selectedItem, placeholder, onSelect }) => {
     const [isFocused, setIsFocused] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -24,7 +43,7 @@ const Dropdown: React.FC<DropdownProps> = ({ label, items, selectedItem, onSelec
     };
 
     const handleSelect = (item: { icon: JSX.Element; label: string }) => {
-        onSelect(item.label);
+        onSelect(item.label as Platform);
         setIsOpen(false);
         setIsFocused(false);
     };
@@ -43,9 +62,9 @@ const Dropdown: React.FC<DropdownProps> = ({ label, items, selectedItem, onSelec
     }, [dropdownRef]);
 
     const dropdownClass = `
-    flex items-center border rounded-md px-3 py-2 transition-colors w-80 cursor-pointer
+    flex items-center border rounded-md px-3 py-2 transition-colors w-full cursor-pointer
     ${isFocused ? 'border-primaryClr-300 shadow-custom' : 'border-gray-300'}
-    ${selectedItem && !isFocused ? 'border-secondaryClr-100' : ''}
+    ${selectedItem && !isFocused ? 'border-[#D9D9D9]' : ''}
   `;
 
     const iconClass = `
@@ -63,14 +82,15 @@ const Dropdown: React.FC<DropdownProps> = ({ label, items, selectedItem, onSelec
     const selectedItemIcon = items.find(item => item.label === selectedItem)?.icon;
 
     return (
-        <div className="relative mt-6 w-[320px]" ref={dropdownRef}>
+        <div className="relative w-[100%]" ref={dropdownRef}>
+            <p className='text-[12px] font-light font-instrumentSans text-secondaryClr-300'>{label}</p>
             <div
                 className={dropdownClass}
                 onClick={handleFocus}
                 tabIndex={0}
             >
-                <span className='  text-md text-secondaryClr-300'>{selectedItemIcon || <FaLink className={iconClass} />}</span>
-                <span className="flex-1 ml-2">{selectedItem || label}</span>
+                <span className='text-md text-secondaryClr-300'>{selectedItemIcon || <FaLink className={iconClass} />}</span>
+                <span className="flex-1 ml-2">{selectedItem || placeholder}</span>
                 {isOpen ? <FaChevronUp className="ml-2 text-primaryClr-300" /> : <FaChevronDown className="ml-2 text-primaryClr-300" />}
             </div>
             {isOpen && (
