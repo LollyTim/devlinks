@@ -7,7 +7,7 @@ import { PiUserCircle } from "react-icons/pi";
 import Button from './ButtonComponent';
 import { BsEye } from "react-icons/bs";
 import { useRouter } from 'next/navigation';
-import { getCurrentUser } from '@/libs/helpers/initializeAppwrite'; // Make sure this path is correct
+import { getCurrentUser } from '@/libs/helpers/initializeAppwrite';
 
 const HeaderComponent = () => {
     const [isMobile, setIsMobile] = useState(false);
@@ -19,14 +19,14 @@ const HeaderComponent = () => {
         handleResize();
         window.addEventListener('resize', handleResize);
 
-        // Fetch current user
+
         const fetchUser = async () => {
             try {
                 const user = await getCurrentUser();
                 setUserId(user.$id);
             } catch (error) {
                 console.error('Error fetching user:', error);
-                // Handle error (e.g., redirect to login page)
+
             }
         };
         fetchUser();
@@ -41,7 +41,7 @@ const HeaderComponent = () => {
             router.push(`/profile/${userId}`);
         } else {
             console.error('User ID not available');
-            // Handle error (e.g., show a notification to the user)
+
         }
     };
 

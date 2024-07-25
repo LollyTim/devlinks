@@ -24,7 +24,7 @@ const ProfileDetails: React.FC = () => {
             try {
                 const user = await getCurrentUser();
                 setUser(user);
-                setEmail(user.email); // Fetch email directly from user
+                setEmail(user.email);
                 console.log(user);
             } catch (error) {
                 console.error('Error fetching user:', error);
