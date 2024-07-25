@@ -131,7 +131,7 @@ const ProfileDetails: React.FC = () => {
                 <form className="space-y-6" onSubmit={handleSave}>
                     <div className='flex flex-col md:flex-row gap-3 items-center rounded-lg bg-secondaryClr-100 p-5 mt-6'>
                         <h3 className='text-secondaryClr-default text-[12px] mb-2 md:mb-0'>Profile picture</h3>
-                        <div className='relative flex flex-col gap-3 items-center justify-center bg-primaryClr-100 rounded-lg w-[200px] h-[200px] text-primaryClr-300'>
+                        <div className='relative flex flex-col md:ml-24  gap-3 items-center justify-center bg-primaryClr-100 rounded-lg w-[200px] h-[200px] text-primaryClr-300'>
                             {profileImage ? (
                                 <>
                                     <img src={profileImage} alt="Profile" className="w-full h-full object-cover rounded-lg" />
@@ -153,7 +153,7 @@ const ProfileDetails: React.FC = () => {
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             />
                         </div>
-                        <h3 className='text-secondaryClr-default text-[12px] max-w-[233px] mt-2 md:mt-0'>Image must be below 1024x1024px. Use PNG or JPG format.</h3>
+                        <h3 className='text-secondaryClr-default text-[12px] md:w-[223px] max-w-[233px] mt-2 md:mt-0'>Image must be below 1024x1024px. Use PNG or JPG format.</h3>
                     </div>
                     <div className='flex flex-col gap-8 bg-secondaryClr-100 rounded-lg p-5 mt-6'>
                         <div className='flex flex-col md:flex-row justify-between items-start'>
