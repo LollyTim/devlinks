@@ -51,16 +51,16 @@ const ProfileDetails: React.FC = () => {
         fetchUser();
     }, [router]);
 
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setProfileImage(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = event.target.files?.[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onloadend = () => {
+    //             setProfileImage(reader.result as string);
+    //         };
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
