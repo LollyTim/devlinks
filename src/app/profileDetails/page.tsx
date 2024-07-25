@@ -149,7 +149,7 @@ const ProfileDetails: React.FC = () => {
                             <input
                                 type="file"
                                 accept="image/png, image/jpeg"
-                                onChange={handleImageUpload}
+                                onChange={() => { }}
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             />
                         </div>
