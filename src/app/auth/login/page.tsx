@@ -1,108 +1,73 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import LinkDisplayComponent from '@/components/LinkDisplayComponent';
-import Image from 'next/image';
-import Button from '@/components/ButtonComponent';
-import defaultProfileImg from "@/images/R.jpeg";
-import { getCurrentUser } from '@/libs/helpers/initializeAppwrite';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { login } from "@/libs/helpers/initializeAppwrite";
+import Button from "@/components/ButtonComponent";
+import Input from "@/components/FormInput";
 
-interface ProfilePageProps {
-  profile: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    profileImage: string;
-  };
-  links: { platform: string; url: string }[];
-}
-
-const ProfilePage: React.FC<ProfilePageProps> = ({ profile, links }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+const LoginPage = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const user = await getCurrentUser();
-        if (user) {
-          setIsLoggedIn(true);
-        } else {
-          router.push('/');
-        }
-      } catch (error) {
-        router.push('/');
-      }
-    };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    checkUser();
-  }, [router]);
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      return;
+    }
 
-  const handleShare = () => {
-    const shareData = {
-      title: `${profile.firstName} ${profile.lastName}'s Profile`,
-      text: `Check out ${profile.firstName} ${profile.lastName}'s profile on our site.`,
-      url: window.location.href,
-    };
-
-    if (navigator.share) {
-      navigator.share(shareData).catch((error) => console.error('Error sharing:', error));
-    } else {
-      navigator.clipboard.writeText(window.location.href)
-        .then(() => alert('Profile link copied to clipboard'))
-        .catch((error) => console.error('Error copying URL:', error));
+    try {
+      await login(email, password);
+      alert('Login successful!');
+      router.push('/');
+    } catch (error) {
+      console.error(error);
+      setError("Login failed. Please check your credentials and try again.");
     }
   };
 
-  const handleBackToEditor = () => {
-    router.push('/');
-  };
-
-  const handleSignupRedirect = () => {
-    router.push('/auth/signup');
-  };
-
   return (
-    <div className="min-h-screen bg-whiteClr flex flex-col items-center">
-      {isLoggedIn ? (
-        <div className='w-full md:bg-primaryClr-300 rounded-bl-3xl rounded-br-3xl h-[300px] justify-center flex'>
-          <div className='flex flex-row justify-between items-center bg-whiteClr w-[90%] h-[70px] rounded-md px-6 py-3 mt-5'>
-            <Button size='medium' outline onClick={handleBackToEditor}>Back to Editor</Button>
-            <Button size='medium' onClick={handleShare}>Share Link</Button>
+    <div className="w-full flex flex-col justify-start mt-12 sm:mt-0 items-center sm:justify-center mx-auto h-screen bg-whiteClr sm:bg-[#FAFAFA] text-black">
+      <div className="flex flex-col lg:justify-center sm:items-center items-start h-[573px] sm:w-[476px] md:w-[476px] lg:w-[476px] w-[360px] gap-[51px]">
+        <div className="flex flex-col justify-center items-center bg-whiteClr rounded-xl w-full px-6 py-6">
+          <div className="flex flex-col justify-start items-start bg-whiteClr gap-[24px] w-full">
+            <div>
+              <h1 className="text-secondaryClr-black font-instrumentSans font-semibold text-3xl leading-[48px]">Login</h1>
+              <p className="text-[16px] font-normal text-secondaryClr-default">Add your details below to log into your account</p>
+            </div>
+            {error && <p className="text-red-500">{error}</p>}
+            <form className="w-full gap-[24px] flex flex-col" onSubmit={handleSubmit}>
+              <Input
+                label="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="e.g. alex@email.com"
+                errorMessage={!email ? "Please enter a valid email" : ""}
+              />
+              <Input
+                label="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                errorMessage={!password ? "Please enter a password" : ""}
+              />
+              <div>
+                <Button size="full-width">Login</Button>
+              </div>
+              <p className="text-[16px] font-normal text-secondaryClr-default text-center flex flex-col sm:flex-row justify-center items-center">
+                Don’t have an account? <span className="text-primaryClr-300 font-normal text-[16px] leading-[24px]"><a href="/auth/signup">Create account</a></span>
+              </p>
+            </form>
           </div>
-        </div>
-      ) : (
-        <div className='w-full md:bg-primaryClr-300 rounded-bl-3xl rounded-br-3xl h-[300px] justify-center flex'>
-          <div className='flex flex-row justify-center items-center bg-whiteClr w-[90%] h-[70px] rounded-md px-6 py-3 mt-5'>
-            <Button size='medium' onClick={handleSignupRedirect}>Sign Up</Button>
-          </div>
-        </div>
-      )}
-      <div className='-mt-32 flex flex-col justify-center items-center px-8 py-5 rounded-lg bg-whiteClr shadow-2xl w-[320px] md:w-[349px]'>
-        <div className="text-center">
-          <Image
-            src={profile.profileImage || defaultProfileImg}
-            alt={`${profile.firstName} ${profile.lastName}`}
-            width={96}
-            height={96}
-            className="mx-auto rounded-full border-4 border-white shadow-lg"
-          />
-          <h1 className="mt-4 text-xl font-bold text-gray-900">{profile.firstName} {profile.lastName}</h1>
-          <p className="text-gray-600 text-sm">{profile.email}</p>
-        </div>
-        <div className="mt-6 space-y-4 w-[80%]">
-          {links.map((link, index) => (
-            <LinkDisplayComponent
-              key={index}
-              platform={link.platform}
-              url={link.url}
-            />
-          ))}
         </div>
       </div>
     </div>
   );
 };
 
-export default ProfilePage;
+export default LoginPage;
