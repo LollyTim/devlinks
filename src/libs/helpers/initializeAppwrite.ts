@@ -152,3 +152,34 @@ export const getLinksByUserId = async (userId: string) => {
     throw error;
   }
 };
+
+export const updateProfileDocument = async (
+  profileId: string,
+  profileData: {
+    profileImage: string | null;
+    firstName: string;
+    lastName: string;
+    email: string;
+  }
+) => {
+  try {
+    const result = await databases.updateDocument(
+      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
+      process.env.NEXT_PUBLIC_APPWRITE_PROFILE_COLLECTION_ID as string,
+      profileId,
+      profileData
+    );
+    console.log("Profile document updated:", result);
+    return result;
+  } catch (error) {
+    console.error("Error updating profile document:", error);
+    if (error instanceof Error) {
+      if (error.message.includes("Unauthorized")) {
+        throw new Error(
+          "User is not authorized. Please check login status and permissions."
+        );
+      }
+    }
+    throw error;
+  }
+};

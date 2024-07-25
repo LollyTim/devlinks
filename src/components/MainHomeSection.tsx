@@ -25,7 +25,6 @@ const MainHomeSection: React.FC = () => {
                 const user = await getCurrentUser();
                 setUser(user);
 
-                // Fetch user profile and links
                 const profileData = await getProfileByUserId(user.$id);
                 const linksData = await getLinksByUserId(user.$id);
 

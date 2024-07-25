@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useStore } from '../../../store/createLinkStore';
-import { getCurrentUser, createProfileDocument } from '@/libs/helpers/initializeAppwrite';
+import { getCurrentUser, createProfileDocument, getProfileByUserId, getLinksByUserId, updateProfileDocument } from '@/libs/helpers/initializeAppwrite';
 import { Models } from 'appwrite';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
@@ -17,6 +17,9 @@ const ProfileDetails: React.FC = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [userLinks, setUserLinks] = useState<any[]>([]);
+    const [isEditing, setIsEditing] = useState(false);
+    const [profileId, setProfileId] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -25,7 +28,20 @@ const ProfileDetails: React.FC = () => {
                 const user = await getCurrentUser();
                 setUser(user);
                 setEmail(user.email);
-                console.log(user);
+
+                if (user) {
+                    const profile = await getProfileByUserId(user.$id);
+                    if (profile) {
+                        setProfileImage(profile.profileImage || null);
+                        setFirstName(profile.firstName || "");
+                        setLastName(profile.lastName || "");
+                        setEmail(profile.email || "");
+                        setProfileId(profile.$id);
+                    }
+
+                    const links = await getLinksByUserId(user.$id);
+                    setUserLinks(links);
+                }
             } catch (error) {
                 console.error('Error fetching user:', error);
                 toast.error('Please log in to continue');
@@ -49,18 +65,30 @@ const ProfileDetails: React.FC = () => {
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const profileData = {
-                profileImage,
-                firstName,
-                lastName,
-                email,
-            };
-            await createProfileDocument(profileData);
-            toast.success('Profile updated successfully!');
-            setEmail("")
-            setFirstName("")
-            setLastName("")
-            setProfileImage("")
+            if (isEditing && profileId) {
+                const profileData = {
+                    profileImage,
+                    firstName,
+                    lastName,
+                    email,
+                };
+                await updateProfileDocument(profileId, profileData);
+                toast.success('Profile updated successfully!');
+            } else {
+                const profileData = {
+                    profileImage,
+                    firstName,
+                    lastName,
+                    email,
+                };
+                await createProfileDocument(profileData);
+                toast.success('Profile created successfully!');
+            }
+            setIsEditing(false);
+            // setEmail("");
+            // setFirstName("");
+            // setLastName("");
+            // setProfileImage("");
         } catch (error) {
             console.error('Error saving profile data:', error);
             toast.error('Failed to update profile.');
@@ -83,8 +111,8 @@ const ProfileDetails: React.FC = () => {
                         </div>
                         <h1 className='font-semibold font-instrumentSans'>{firstName} {lastName}</h1>
                         <p>{email}</p>
-                        <div className='w-full h-[50%] overflow-y-auto'>
-                            {links.map((link, index) => (
+                        <div className='w-full h-[50%] flex flex-col justify-center items-center overflow-y-auto'>
+                            {userLinks.map((link, index) => (
                                 <LinkDisplayComponent key={index} platform={link.platform} url={link.url} />
                             ))}
                         </div>
@@ -93,8 +121,12 @@ const ProfileDetails: React.FC = () => {
             </div>
             <div className='w-full md:w-[65%] bg-whiteClr rounded-md p-4 md:p-[40px] flex flex-col'>
                 <div>
-                    <h1 className='text-2xl md:text-[32px] font-instrumentSans font-semibold text-secondaryClr-black'>Profile Details</h1>
-                    <p className='text-sm md:text-base text-secondaryClr-default font-instrumentSans font-normal'>Add your details to create a personal touch to your profile.</p>
+                    <h1 className='text-2xl md:text-[32px] font-instrumentSans font-semibold text-secondaryClr-black'>
+                        {isEditing ? 'Edit Profile Details' : 'Profile Details'}
+                    </h1>
+                    <p className='text-sm md:text-base text-secondaryClr-default font-instrumentSans font-normal'>
+                        {isEditing ? 'Update your details to keep your profile current.' : 'Add your details to create a personal touch to your profile.'}
+                    </p>
                 </div>
                 <form className="space-y-6" onSubmit={handleSave}>
                     <div className='flex flex-col md:flex-row gap-3 items-center rounded-lg bg-secondaryClr-100 p-5 mt-6'>
@@ -133,6 +165,7 @@ const ProfileDetails: React.FC = () => {
                                     placeholder="e.g. John"
                                     errorMessage={""}
                                     showError
+                                    disabled={!isEditing}
                                 />
                             </div>
                         </div>
@@ -145,6 +178,7 @@ const ProfileDetails: React.FC = () => {
                                     placeholder="e.g. Appleseed"
                                     errorMessage={""}
                                     showError
+                                    disabled={!isEditing}
                                 />
                             </div>
                         </div>
@@ -157,12 +191,16 @@ const ProfileDetails: React.FC = () => {
                                     placeholder="e.g. email@example.com"
                                     errorMessage={""}
                                     showError
+                                    disabled={!isEditing}
                                 />
                             </div>
                         </div>
                     </div>
                     <div className='flex justify-end items-center mt-4'>
-                        <Button size='small' type='submit'>Save</Button>
+                        {isEditing ? <Button size='small' type='submit'> Save </Button> : <></>}
+                        {!isEditing && (
+                            <Button size='small' type='button' onClick={() => setIsEditing(true)}>Edit</Button>
+                        )}
                     </div>
                 </form>
             </div>
