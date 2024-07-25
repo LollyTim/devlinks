@@ -88,7 +88,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ profile, links }) => {
                     <h1 className="mt-4 text-xl font-bold text-gray-900">{profile.firstName} {profile.lastName}</h1>
                     <p className="text-gray-600 text-sm">{profile.email}</p>
                 </div>
-                <div className="mt-6 space-y-4 w-[80%]">
+                <div className="mt-6 space-y-4 flex flex-col justify-center items-center w-[80%]">
                     {links.map((link, index) => (
                         <LinkDisplayComponent
                             key={index}
