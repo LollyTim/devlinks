@@ -142,14 +142,12 @@ const LinkFormComponent: React.FC<LinkFormComponentProps> = ({ index }) => {
                     items={items}
                     selectedItem={link.platform as Platform}
                     onSelect={handleSelect}
-                // errorMessage={errors.platform}
-                // showError={!!errors.platform}
                 />
                 <Input
                     label="Link"
                     value={link.url}
                     onChange={handleChange}
-                    placeholder="e.g. https://www.github.com/username"
+                    placeholder="e.g. https://www.domain.com/username"
                     errorMessage={errors.url}
                     showError={!!errors.url}
                     icon={FaLink}

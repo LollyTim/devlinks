@@ -1,7 +1,6 @@
 import React from 'react';
-import { FaGithub, FaLink, FaLinkedin, FaYoutube, FaTwitter, FaFacebook, FaTwitch, FaDev, FaCodepen, FaStackOverflow } from 'react-icons/fa6';
+import { FaGithub, FaLink, FaLinkedin, FaYoutube, FaTwitter, FaFacebook, FaTwitch, FaDev, FaCodepen, FaStackOverflow, FaArrowRight } from 'react-icons/fa6';
 import { SiFrontendmentor, SiCodewars, SiFreecodecamp, SiGitlab, SiHashnode } from 'react-icons/si';
-import { LuEqual } from "react-icons/lu";
 
 type Platform =
     | 'Github'
@@ -45,10 +44,19 @@ const LinkDisplayComponent: React.FC<LinkDisplayProps> = ({ platform, url }) => 
     const style = platformStyles[platform as Platform] || { background: 'gray', color: 'white', icon: <FaLink /> };
 
     return (
-        <div className="w-full px-4 py-2 mb-2 rounded-md flex items-center" style={{ background: style.background, color: style.color }}>
-            {style.icon}
-            <span className="ml-2">{platform}</span>
-        </div>
+        <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full px-4 py-4 mb-4 rounded-md flex items-center justify-between transition-transform hover:scale-105"
+            style={{ background: style.background, color: style.color }}
+        >
+            <div className="flex items-center">
+                {style.icon}
+                <span className="ml-3 font-bold">{platform}</span>
+            </div>
+            <FaArrowRight />
+        </a>
     );
 };
 

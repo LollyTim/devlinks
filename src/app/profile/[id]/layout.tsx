@@ -14,7 +14,7 @@ export default function Layout({
     return (
         <html lang="en">
             <body className={inter.className}>
-                <HeaderComponent />
+                {/* <HeaderComponent /> */}
                 {children}
             </body>
         </html>

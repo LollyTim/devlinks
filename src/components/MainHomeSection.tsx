@@ -95,9 +95,10 @@ const MainHomeSection: React.FC = () => {
                                 <LinkFormComponent key={index} index={index} />
                             ))
                         )}
-                        <div className='flex justify-end mt-4'>
+                        <div className='flex justify-end items-center px-2 py-3 mt-4 fixed bottom-0 h-[60px] bg-white w-[60%] right-8 border-t border-secondaryClr-200'>
                             <Button size='small' type='submit'>Save</Button>
                         </div>
+
                     </form>
                 </div>
             </div>

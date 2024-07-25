@@ -6,20 +6,44 @@ import { FaLink } from "react-icons/fa6";
 import { PiUserCircle } from "react-icons/pi";
 import Button from './ButtonComponent';
 import { BsEye } from "react-icons/bs";
+import { useRouter } from 'next/navigation';
+import { getCurrentUser } from '@/libs/helpers/initializeAppwrite'; // Make sure this path is correct
 
 const HeaderComponent = () => {
     const [isMobile, setIsMobile] = useState(false);
+    const [userId, setUserId] = useState<string | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
         handleResize();
         window.addEventListener('resize', handleResize);
 
+        // Fetch current user
+        const fetchUser = async () => {
+            try {
+                const user = await getCurrentUser();
+                setUserId(user.$id);
+            } catch (error) {
+                console.error('Error fetching user:', error);
+                // Handle error (e.g., redirect to login page)
+            }
+        };
+        fetchUser();
 
         return () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
+
+    const handlePreviewClick = () => {
+        if (userId) {
+            router.push(`/profile/${userId}`);
+        } else {
+            console.error('User ID not available');
+            // Handle error (e.g., show a notification to the user)
+        }
+    };
 
     return (
         <div className='w-full flex flex-row justify-center items-center mx-auto bg-secondaryClr-100 h-[124px]'>
@@ -52,11 +76,11 @@ const HeaderComponent = () => {
                 </div>
                 <div>
                     {isMobile ? (
-                        <button className='rounded-md flex flex-row gap-2 text-[16px] font-instrumentSans font-semibold text-primaryClr-300 bg-primaryClr-100 items-center justify-center px-3 py-2'>
+                        <button onClick={handlePreviewClick} className='rounded-md flex flex-row gap-2 text-[16px] font-instrumentSans font-semibold text-primaryClr-300 bg-primaryClr-100 items-center justify-center px-3 py-2'>
                             <BsEye size={20} />
                         </button>
                     ) : (
-                        <Button size='small' outline>Preview</Button>
+                        <Button size='small' outline onClick={handlePreviewClick}>Preview</Button>
                     )}
                 </div>
             </div>

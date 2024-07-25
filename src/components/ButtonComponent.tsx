@@ -21,7 +21,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
     const [variant, setVariant] = useState<ButtonVariant>(initialVariant);
 
-    const baseClasses = 'py-2 px-4 rounded-lg font-semibold transition duration-300 ease-in-out';
+    const baseClasses = 'py-2 px-4 h-fit rounded-lg font-semibold transition duration-300 ease-in-out';
 
     const variantClasses = variant === 'active'
         ? (outline ? 'border border-purple-600 bg-purple-100 text-purple-600' : 'bg-purple-400 text-white')

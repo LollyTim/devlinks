@@ -3,7 +3,7 @@ import { IconType } from 'react-icons';
 import { FaLink } from 'react-icons/fa';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-    label: string;
+    label?: string;
     placeholder: string;
     errorMessage?: string;
     showError?: boolean;
@@ -21,7 +21,7 @@ const Input: React.FC<InputProps> = ({ label, errorMessage, placeholder, showErr
     };
 
     const inputClass = `
-    flex items-center border rounded-md px-3 py-2 transition-colors font-instrumentSans
+    flex items-center border rounded-md px-3 py-2 transition-colors font-instrumentSans w-full
     ${isFocused ? 'border-primaryClr-300 shadow-custom' : 'border-gray-300'}
     ${showError && errorMessage ? 'border-red-500' : ''}
     ${isFilled && !isFocused && !showError ? 'border-[#D9D9D9]' : ''}
@@ -33,7 +33,7 @@ const Input: React.FC<InputProps> = ({ label, errorMessage, placeholder, showErr
   `;
 
     return (
-        <div className="relative">
+        <div className="relative bg-white w-full">
             <label htmlFor="" className={showError && errorMessage ? "text-accent-default text-[12px]" : "text-gray text-[12px]"}>{label}</label>
             <label className={inputClass}>
                 {Icon && <Icon className={iconClass} size={15} />}

@@ -1,5 +1,4 @@
-// libs/helpers/initializeAppwrite.ts
-import { Account, Client, Databases, ID, Models } from "appwrite";
+import { Account, Client, Databases, ID, Models, Query } from "appwrite";
 
 export const client = new Client();
 
@@ -42,7 +41,6 @@ export const getCurrentUser = async (): Promise<
 
 export const createMultipleDocuments = async (documents: any[]) => {
   try {
-    // Check if the user is logged in
     const user = await getCurrentUser();
     if (!user) {
       throw new Error("User is not logged in");
@@ -71,6 +69,86 @@ export const createMultipleDocuments = async (documents: any[]) => {
         );
       }
     }
+    throw error;
+  }
+};
+
+export const createProfileDocument = async (profileData: {
+  profileImage: string | null;
+  firstName: string;
+  lastName: string;
+  email: string;
+}) => {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      throw new Error("User is not logged in");
+    }
+
+    const document = {
+      ...profileData,
+      userId: user.$id,
+    };
+
+    const result = await databases.createDocument(
+      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
+      process.env.NEXT_PUBLIC_APPWRITE_PROFILE_COLLECTION_ID as string, // Ensure you have this environment variable set for profile collection
+      ID.unique(),
+      document
+    );
+
+    console.log("Profile document created:", result);
+    return result;
+  } catch (error) {
+    console.error("Error in createProfileDocument:", error);
+    if (error instanceof Error) {
+      if (error.message.includes("Unauthorized")) {
+        throw new Error(
+          "User is not authorized. Please check login status and permissions."
+        );
+      } else if (error.message.includes("Document already exists")) {
+        throw new Error("A profile for this user already exists.");
+      }
+    }
+    throw error;
+  }
+};
+
+export const getProfileByUserId = async (userId: string) => {
+  try {
+    console.log("Fetching profile for userId:", userId);
+    const response = await databases.listDocuments(
+      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
+      process.env.NEXT_PUBLIC_APPWRITE_PROFILE_COLLECTION_ID as string,
+      [Query.equal("userId", userId)]
+    );
+    console.log("Profile fetch response:", response);
+
+    if (response.documents.length === 0) {
+      console.log("No profile found for userId:", userId);
+      return null;
+    }
+
+    return response.documents[0];
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    throw error;
+  }
+};
+
+export const getLinksByUserId = async (userId: string) => {
+  try {
+    console.log("Fetching links for userId:", userId);
+    const response = await databases.listDocuments(
+      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
+      process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_ID as string,
+      [Query.equal("userId", userId)]
+    );
+    console.log("Links fetch response:", response);
+
+    return response.documents;
+  } catch (error) {
+    console.error("Error fetching links:", error);
     throw error;
   }
 };
