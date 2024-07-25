@@ -1,12 +1,12 @@
-// components/ProfilePage.tsx
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import LinkDisplayComponent from '@/components/LinkDisplayComponent';
 import Image from 'next/image';
 import Button from '@/components/ButtonComponent';
 import defaultProfileImg from "@/images/R.jpeg";
-
+import { getCurrentUser } from '@/libs/helpers/initializeAppwrite';
 interface ProfilePageProps {
     profile: {
         firstName: string;
@@ -18,15 +18,65 @@ interface ProfilePageProps {
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ profile, links }) => {
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        const checkUser = async () => {
+            try {
+                const user = await getCurrentUser();
+                if (user) {
+                    setIsLoggedIn(true);
+                }
+            } catch (error) {
+                setIsLoggedIn(false);
+            }
+        };
+
+        checkUser();
+    }, []);
+
+    const handleShare = () => {
+        const shareData = {
+            title: `${profile.firstName} ${profile.lastName}'s Profile`,
+            text: `Check out ${profile.firstName} ${profile.lastName}'s profile on our site.`,
+            url: window.location.href,
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData).catch((error) => console.error('Error sharing:', error));
+        } else {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => alert('Profile link copied to clipboard'))
+                .catch((error) => console.error('Error copying URL:', error));
+        }
+    };
+
+    const handleBackToEditor = () => {
+        router.push('/');
+    };
+
+    const handleSignupRedirect = () => {
+        router.push('/auth/signup');
+    };
+
     return (
         <div className="min-h-screen bg-whiteClr flex flex-col items-center">
-            <div className=' w-full md:bg-primaryClr-300 rounded-bl-3xl rounded-br-3xl h-[300px] justify-center flex'>
-                <div className=' flex flex-row justify-between items-center bg-whiteClr w-[90%] h-[70px] rounded-md px-6 py-3 mt-5 '>
-                    <Button size='medium' outline>Back to Editor</Button>
-                    <Button size='medium' >Share Link</Button>
-                </div>
+            <div className='w-full md:bg-primaryClr-300 rounded-bl-3xl rounded-br-3xl h-[300px] justify-center flex'>
+                {isLoggedIn ? (
+                    <div className='flex flex-row justify-between items-center bg-whiteClr w-[90%] h-[70px] rounded-md px-6 py-3 mt-5'>
+                        <Button size='medium' outline onClick={handleBackToEditor}>Back to Editor</Button>
+                        <Button size='medium' onClick={handleShare}>Share Link</Button>
+                    </div>
+                ) : (
+                    <div className='flex flex-row justify-center items-center bg-whiteClr w-[90%] h-[70px] rounded-md px-6 py-3 mt-5'>
+                        <Button size='medium' onClick={handleSignupRedirect}>Sign Up</Button>
+                    </div>
+                )}
             </div>
-            <div className=' -mt-32 flex flex-col justify-center items-center px-8 py-5 rounded-lg bg-whiteClr shadow-2xl w-[320px] md:w-[349px] '>
+            {/* <div className='w-full md:bg-primaryClr-300 rounded-bl-3xl rounded-br-3xl h-[300px] justify-center flex'>
+                </div> */}
+            <div className='-mt-32 flex flex-col justify-center items-center px-8 py-5 rounded-lg bg-whiteClr shadow-2xl w-[320px] md:w-[349px]'>
                 <div className="text-center">
                     <Image
                         src={profile.profileImage || defaultProfileImg}
