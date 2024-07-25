@@ -48,7 +48,7 @@ const LinkDisplayComponent: React.FC<LinkDisplayProps> = ({ platform, url }) => 
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full px-4 py-4 mb-4 rounded-md flex items-center justify-between transition-transform hover:scale-105"
+            className="w-full px-2 py-2 max-w-[200px] mb-4 rounded-md flex items-center justify-between transition-transform hover:scale-105"
             style={{ background: style.background, color: style.color }}
         >
             <div className="flex items-center">

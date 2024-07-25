@@ -7,18 +7,20 @@ import { PiUserCircle } from "react-icons/pi";
 import Button from './ButtonComponent';
 import { BsEye } from "react-icons/bs";
 import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { getCurrentUser } from '@/libs/helpers/initializeAppwrite';
 
 const HeaderComponent = () => {
     const [isMobile, setIsMobile] = useState(false);
     const [userId, setUserId] = useState<string | null>(null);
     const router = useRouter();
+    const currentPath = usePathname();
+
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
         handleResize();
         window.addEventListener('resize', handleResize);
-
 
         const fetchUser = async () => {
             try {
@@ -26,7 +28,6 @@ const HeaderComponent = () => {
                 setUserId(user.$id);
             } catch (error) {
                 console.error('Error fetching user:', error);
-
             }
         };
         fetchUser();
@@ -41,8 +42,13 @@ const HeaderComponent = () => {
             router.push(`/profile/${userId}`);
         } else {
             console.error('User ID not available');
-
         }
+    };
+
+    const getButtonClasses = (path: string) => {
+        const isActive = currentPath === path;
+        return `rounded-md flex flex-row gap-2 text-[16px] font-instrumentSans font-semibold items-center justify-center px-5 py-2 transition-all ${isActive ? 'text-primaryClr-300 bg-primaryClr-100' : 'text-secondaryClr-default'
+            }`;
     };
 
     return (
@@ -54,20 +60,20 @@ const HeaderComponent = () => {
                 <div className='flex flex-row gap-3'>
                     {isMobile ? (
                         <>
-                            <button className='rounded-md flex flex-row gap-2 text-[16px] font-instrumentSans font-semibold text-primaryClr-300 bg-primaryClr-100 items-center justify-center px-3 py-2'>
+                            <button onClick={() => router.push(`/`)} className={getButtonClasses(`/`)}>
                                 <FaLink size={20} />
                             </button>
-                            <button className='flex flex-row gap-2 text-[16px] transition-all active:text-primaryClr-300 font-instrumentSans font-semibold text-secondaryClr-300 items-center justify-center px-3 py-2'>
+                            <button onClick={() => router.push(`/profileDetails`)} className={getButtonClasses(`/profileDetails`)}>
                                 <PiUserCircle size={20} />
                             </button>
                         </>
                     ) : (
                         <>
-                            <button className='rounded-md flex flex-row gap-2 text-[16px] font-instrumentSans font-semibold text-primaryClr-300 bg-primaryClr-100 items-center justify-center px-5 py-2'>
+                            <button onClick={() => router.push(`/`)} className={getButtonClasses(`/`)}>
                                 <FaLink size={20} />
                                 <span>Link</span>
                             </button>
-                            <button className='flex flex-row gap-2 text-[16px] transition-all active:text-primaryClr-300 font-instrumentSans font-semibold text-secondaryClr-300 items-center justify-center px-5 py-2'>
+                            <button onClick={() => router.push(`/profileDetails`)} className={getButtonClasses(`/profileDetails`)}>
                                 <PiUserCircle size={20} />
                                 <span>Profile Details</span>
                             </button>
@@ -76,7 +82,7 @@ const HeaderComponent = () => {
                 </div>
                 <div>
                     {isMobile ? (
-                        <button onClick={handlePreviewClick} className='rounded-md flex flex-row gap-2 text-[16px] font-instrumentSans font-semibold text-primaryClr-300 bg-primaryClr-100 items-center justify-center px-3 py-2'>
+                        <button onClick={handlePreviewClick} className={getButtonClasses(`/profile/${userId}`)}>
                             <BsEye size={20} />
                         </button>
                     ) : (

@@ -10,6 +10,7 @@ interface Store {
   addLink: () => void;
   removeLink: (index: number) => void;
   updateLink: (index: number, newLink: Link) => void;
+  setLinks: (newLinks: Link[]) => void; // Add this line
 }
 
 const useStore = create<Store>((set) => ({
@@ -25,6 +26,12 @@ const useStore = create<Store>((set) => ({
   updateLink: (index, newLink) =>
     set((state) => ({
       links: state.links.map((link, i) => (i === index ? newLink : link)),
+    })),
+  setLinks: (
+    newLinks // Add this method
+  ) =>
+    set(() => ({
+      links: newLinks,
     })),
 }));
 

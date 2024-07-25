@@ -92,7 +92,7 @@ export const createProfileDocument = async (profileData: {
 
     const result = await databases.createDocument(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
-      process.env.NEXT_PUBLIC_APPWRITE_PROFILE_COLLECTION_ID as string, // Ensure you have this environment variable set for profile collection
+      process.env.NEXT_PUBLIC_APPWRITE_PROFILE_COLLECTION_ID as string,
       ID.unique(),
       document
     );
@@ -116,39 +116,39 @@ export const createProfileDocument = async (profileData: {
 
 export const getProfileByUserId = async (userId: string) => {
   try {
-    console.log("Fetching profile for userId:", userId);
+    // console.log("Fetching profile for userId:", userId);
     const response = await databases.listDocuments(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_PROFILE_COLLECTION_ID as string,
       [Query.equal("userId", userId)]
     );
-    console.log("Profile fetch response:", response);
+    // console.log("Profile fetch response:", response);
 
     if (response.documents.length === 0) {
-      console.log("No profile found for userId:", userId);
+      // console.log("No profile found for userId:", userId);
       return null;
     }
 
     return response.documents[0];
   } catch (error) {
-    console.error("Error fetching profile:", error);
+    // console.error("Error fetching profile:", error);
     throw error;
   }
 };
 
 export const getLinksByUserId = async (userId: string) => {
   try {
-    console.log("Fetching links for userId:", userId);
+    // console.log("Fetching links for userId:", userId);
     const response = await databases.listDocuments(
       process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID as string,
       process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_ID as string,
       [Query.equal("userId", userId)]
     );
-    console.log("Links fetch response:", response);
+    // console.log("Links fetch response:", response);
 
     return response.documents;
   } catch (error) {
-    console.error("Error fetching links:", error);
+    // console.error("Error fetching links:", error);
     throw error;
   }
 };
